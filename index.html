@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>法國旅遊隨身說 - French Travel Talker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@600&display=swap');
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f1f5f9;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 橫向模式專用樣式 */
+        @media (orientation: landscape) {
+            #portrait-view { display: none; }
+            #landscape-view { display: flex !important; }
+            body { background-color: #000; }
+        }
+
+        #landscape-view {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #05559E 0%, #000 100%);
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            z-index: 9999;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .french-text { font-family: 'Poppins', sans-serif; }
+
+        /* 防止 iOS 橡皮筋回彈 */
+        html, body {
+            position: fixed;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        #scroll-container {
+            height: calc(100% - 180px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .active-btn {
+            background-color: #05559E !important;
+            color: white !important;
+            transform: scale(0.95);
+        }
+
+        /* 點擊回饋動畫 */
+        .btn-active:active {
+            transform: scale(0.98);
+            filter: brightness(0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 直向模式 (查找清單) -->
+    <div id="portrait-view" class="h-full flex flex-col">
+        <!-- 頂部狀態列 -->
+        <header class="bg-white border-b p-4 pt-8 sticky top-0 z-10 shadow-md">
+            <div class="max-w-md mx-auto">
+                <div class="flex justify-between items-end mb-1">
+                    <h1 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">目前準備播放</h1>
+                    <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">點擊下方卡片發音</span>
+                </div>
+                <div onclick="speakCurrent()" class="cursor-pointer active:opacity-60 transition-opacity">
+                    <div id="display-zh" class="text-lg font-bold text-gray-800">請選取一個句子</div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <div id="display-fr" class="text-3xl font-bold text-blue-700 french-text break-words">Bonjour</div>
+                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 內容區域 -->
+        <main id="scroll-container" class="flex-1 p-4 pb-20">
+            <div class="max-w-md mx-auto space-y-6">
+                
+                <!-- 萬用禮貌金句 -->
+                <section>
+                    <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1 flex items-center">
+                        <span class="w-1 h-4 bg-blue-500 rounded-full mr-2"></span>
+                        日常禮貌
+                    </h2>
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="updatePhrase('你好 / 日安', 'Bonjour')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-blue-500 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-1">Bonjour</div>
+                                <div class="font-bold text-lg text-gray-800">你好 / 日安</div>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        </button>
+                        <button onclick="updatePhrase('麻煩您 / 請問...', 'S\'il vous plaît')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-gray-300 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-1">S'il vous plaît</div>
+                                <div class="font-bold text-lg text-gray-800">麻煩您 / 請問...</div>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 飯店住宿 -->
+                <section class="bg-green-50 p-4 rounded-3xl">
+                    <h2 class="text-xs font-bold text-green-800 mb-3 ml-1 font-bold">飯店與住宿需求</h2>
+                    <div class="space-y-2">
+                        <button onclick="updatePhrase('我有預訂房間', 'J\'ai une réservation.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-green-500">
+                            <div>
+                                <div class="text-xs text-gray-400">J'ai une réservation.</div>
+                                <div class="font-bold text-gray-800">我有預訂房間</div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        </button>
+                        <button onclick="updatePhrase('Wi-Fi 密碼是多少？', 'Quel est le mot de passe du Wi-Fi ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
+                            <span>Wi-Fi 密碼是多少？</span>
+                            <span class="text-xs text-blue-500">Wi-Fi?</span>
+                        </button>
+                        <button onclick="updatePhrase('可以寄放行李嗎？', 'Puis-je laisser mes bagages ici ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
+                            <span>可以寄放行李嗎？</span>
+                            <span class="text-xs text-gray-400">Bagages?</span>
+                        </button>
+                        <button onclick="updatePhrase('早餐是幾點？', 'À quelle heure est le petit-déjeuner ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
+                            <span>早餐是幾點？</span>
+                            <span class="text-xs text-gray-400">Petit-déjeuner?</span>
+                        </button>
+                        <button onclick="updatePhrase('沒有熱水', 'Il n\'y a pas d\'eau chaude.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center text-red-600">
+                            <span class="font-bold">房間沒有熱水</span>
+                            <span class="text-xs opacity-60">Pas d'eau chaude</span>
+                        </button>
+                        <button onclick="updatePhrase('我要退房 / 結帳', 'Je voudrais régler la note.')" class="btn-active w-full bg-gray-800 text-white p-4 rounded-2xl font-bold flex justify-between items-center">
+                            <span>辦理退房 (Check-out)</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 地點模板 -->
+                <section class="bg-blue-100 p-4 rounded-3xl">
+                    <h2 class="text-xs font-bold text-blue-800 mb-3 ml-1 font-bold">詢問地點</h2>
+                    <div class="bg-white p-4 rounded-2xl card-shadow">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '洗手間', 'les toilettes', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700 flex items-center justify-center gap-2">
+                                🚽 洗手間
+                            </button>
+                            <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '捷運站', 'la station de métro', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700 flex items-center justify-center gap-2">
+                                🚇 捷運/地鐵
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 餐廳用餐 -->
+                <section>
+                    <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1">餐廳用餐</h2>
+                    <div class="space-y-3">
+                        <div class="bg-white p-4 rounded-2xl card-shadow">
+                            <p class="text-xs text-gray-400 mb-3">預約人數：</p>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '1位', 'une', this)" class="var-btn-2 btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">1位</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '2位', 'deux', this)" class="var-btn-2 btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">2位</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '3位', 'trois', this)" class="var-btn-2 btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">3位</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] personas, s\'il vous plaît.', '4位', 'quatre', this)" class="var-btn-2 btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">4位</button>
+                            </div>
+                        </div>
+                        <button onclick="updatePhrase('買單 / 結帳', 'L\'addition, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-blue-600">
+                            <div>
+                                <div class="font-bold text-blue-600">買單 / 結帳</div>
+                            </div>
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 購物 -->
+                <section>
+                    <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1">購物</h2>
+                    <div class="space-y-2">
+                        <button onclick="updatePhrase('這多少錢？', 'C\'est combien ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
+                            <span class="font-bold">這多少錢？</span>
+                            <span class="text-blue-500 font-medium">C'est combien?</span>
+                        </button>
+                        <button onclick="updatePhrase('我要退稅', 'La détaxe, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
+                            <span>我要辦理退稅</span>
+                            <span class="text-gray-400 text-sm">La détaxe</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 緊急 -->
+                <section class="pb-12">
+                    <h2 class="text-xs font-bold text-red-600 mb-3 ml-1">緊急狀態</h2>
+                    <button onclick="updatePhrase('請救救我 / 幫幫我', 'Aidez-moi, s\'il vous plaît.')" class="btn-active w-full bg-red-600 text-white p-5 rounded-3xl card-shadow font-bold text-xl flex justify-between items-center">
+                        <span>🆘 救命 / 請幫幫我</span>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                    </button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 橫向展示模式 -->
+    <div id="landscape-view" onclick="speakCurrent()">
+        <div id="land-zh" class="text-2xl opacity-80 mb-4">點擊螢幕播放語音</div>
+        <div id="land-fr" class="text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6">Bonjour</div>
+        <div class="mt-16 flex items-center gap-2 text-blue-300 animate-bounce">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+            <span class="text-sm font-bold tracking-widest uppercase">Tap to speak</span>
+        </div>
+    </div>
+
+    <script>
+        let currentFrench = "Bonjour";
+        let currentChinese = "你好 / 日安";
+
+        function updatePhrase(zh, fr) {
+            currentChinese = zh;
+            currentFrench = fr;
+            document.getElementById('display-zh').innerText = zh;
+            document.getElementById('display-fr').innerText = fr;
+            document.getElementById('land-zh').innerText = zh;
+            document.getElementById('land-fr').innerText = fr;
+
+            const landFr = document.getElementById('land-fr');
+            if(fr.length > 20) {
+                landFr.className = "text-3xl md:text-5xl font-bold french-text leading-tight drop-shadow-lg px-6";
+            } else {
+                landFr.className = "text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6";
+            }
+
+            speak(fr);
+            document.querySelectorAll('.var-btn, .var-btn-2').forEach(b => b.classList.remove('active-btn'));
+        }
+
+        function updateTemplate(templateFr, varZh, varFr, btn) {
+            const siblingClass = btn.classList.contains('var-btn') ? '.var-btn' : '.var-btn-2';
+            document.querySelectorAll(siblingClass).forEach(b => b.classList.remove('active-btn'));
+            btn.classList.add('active-btn');
+            const finalFr = templateFr.replace('[VAR]', varFr);
+            const finalZh = varZh.includes('位') ? `我要預約 ${varZh}` : `請問「${varZh}」在哪裡？`;
+            updatePhrase(finalZh, finalFr);
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakCurrent() {
+            speak(currentFrench);
+        }
+
+        const handleResize = () => {
+            if (window.innerWidth > window.innerHeight) {
+                document.getElementById('landscape-view').style.display = 'flex';
+            } else {
+                document.getElementById('landscape-view').style.display = 'none';
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', handleResize);
+    </script>
+</body>
+</html>
