@@ -74,7 +74,7 @@
             <div class="max-w-md mx-auto">
                 <div class="flex justify-between items-end mb-1">
                     <h1 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">目前準備播放</h1>
-                    <span id="voice-status" class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">正在初始化語音...</span>
+                    <span id="voice-status" class="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">尋找語音中...</span>
                 </div>
                 <div onclick="speakCurrent()" class="cursor-pointer active:opacity-60 transition-opacity">
                     <div id="display-zh" class="text-lg font-bold text-gray-800">請選取一個句子</div>
@@ -158,19 +158,31 @@
         let currentChinese = "你好 / 日安";
         let selectedVoice = null;
 
-        // 核心修正：強制搜尋法文語音包
+        // 加強版：深度搜尋高品質法文語音
         function getBestFrenchVoice() {
             const voices = window.speechSynthesis.getVoices();
-            // 優先找高品質法文，其次找任何法文
-            let frVoice = voices.find(v => v.lang === 'fr-FR' && v.name.includes('Premium')) ||
-                          voices.find(v => v.lang === 'fr-FR' && v.name.includes('Enhanced')) ||
-                          voices.find(v => v.lang.startsWith('fr'));
-            
-            if (frVoice) {
-                document.getElementById('voice-status').innerText = "法文語音已就緒";
-                document.getElementById('voice-status').className = "text-[9px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full";
+            if (voices.length === 0) return null;
+
+            // 定義優先順序清單：Premium/Siri > Enhanced > 標準 fr-FR
+            const priorityChecks = [
+                v => v.lang === 'fr-FR' && (v.name.includes('Premium') || v.name.includes('Siri')),
+                v => v.lang === 'fr-FR' && v.name.includes('Enhanced'),
+                v => v.lang === 'fr-FR',
+                v => v.lang.startsWith('fr')
+            ];
+
+            for (let check of priorityChecks) {
+                const found = voices.find(check);
+                if (found) {
+                    const statusEl = document.getElementById('voice-status');
+                    // 簡化顯示名稱 (移除多餘的系統標籤)
+                    const displayName = found.name.split(' (')[0].replace('French (France)', '法語');
+                    statusEl.innerText = `語音: ${displayName}`;
+                    statusEl.className = "text-[9px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold";
+                    return found;
+                }
             }
-            return frVoice;
+            return null;
         }
 
         function speak(text) {
@@ -181,7 +193,7 @@
             utterance.lang = 'fr-FR';
             utterance.rate = 0.8;
 
-            // 每一次播放都重新嘗試抓取正確聲音，防止被系統重置
+            // 每次播放都重新偵測，防止 iOS 在靜音後遺失 voice 對象
             const voice = getBestFrenchVoice();
             if (voice) {
                 utterance.voice = voice;
@@ -197,6 +209,14 @@
             document.getElementById('display-fr').innerText = fr;
             document.getElementById('land-zh').innerText = zh;
             document.getElementById('land-fr').innerText = fr;
+
+            const landFr = document.getElementById('land-fr');
+            if(fr.length > 20) {
+                landFr.className = "text-3xl md:text-5xl font-bold french-text leading-tight drop-shadow-lg px-6";
+            } else {
+                landFr.className = "text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6";
+            }
+
             speak(fr);
             document.querySelectorAll('.var-btn').forEach(b => b.classList.remove('active-btn'));
         }
@@ -213,7 +233,6 @@
             speak(currentFrench);
         }
 
-        // 監聽旋轉
         window.addEventListener('resize', () => {
             if (window.innerWidth > window.innerHeight) {
                 document.getElementById('landscape-view').style.display = 'flex';
@@ -222,14 +241,19 @@
             }
         });
 
-        // 解決 iOS 語音加載問題
-        window.speechSynthesis.onvoiceschanged = getBestFrenchVoice;
+        // 監聽語音資源變動
+        window.speechSynthesis.onvoiceschanged = () => {
+            getBestFrenchVoice();
+        };
         
         window.onload = () => {
-            // 初始解鎖
+            // 嘗試解鎖語音引擎
             const unlock = new SpeechSynthesisUtterance('');
             window.speechSynthesis.speak(unlock);
-            setTimeout(getBestFrenchVoice, 500);
+            
+            // 延遲偵測以確保 iOS 列表已填充
+            setTimeout(getBestFrenchVoice, 300);
+            setTimeout(getBestFrenchVoice, 1000);
         };
     </script>
 </body>
