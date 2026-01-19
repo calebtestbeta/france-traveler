@@ -162,10 +162,11 @@
                         </button>
                         <button onclick="updatePhrase('可以寄放行李嗎？', 'Puis-je laisser mes bagages ici ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                             <span>可以寄放行李嗎？</span>
+                            <span class="text-[10px] text-gray-400 italic">Mes bagages?</span>
                         </button>
                         <button onclick="updatePhrase('沒有熱水', 'Il n\'y a pas d\'eau chaude.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center text-red-600">
                             <span class="font-bold">房間沒有熱水</span>
-                            <span class="text-xs opacity-60">Pas d'eau chaude</span>
+                            <span class="text-xs opacity-60 italic">Pas d'eau chaude</span>
                         </button>
                     </div>
                 </section>
@@ -196,9 +197,9 @@
                             <p class="text-xs text-gray-400 mb-3">人數預約模板：</p>
                             <div class="grid grid-cols-4 gap-2">
                                 <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '1位', 'une', this)" class="var-btn btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">1人</button>
-                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '2位', 'deux', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">2人</button>
-                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '3位', 'trois', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">3人</button>
-                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '4位', 'quatre', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">4人</button>
+                                <button onclick="updateTemplate('Une table for [VAR] personnes, s\'il vous plaît.', '2位', 'deux', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">2人</button>
+                                <button onclick="updateTemplate('Une table for [VAR] personas, s\'il vous plaît.', '3位', 'trois', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">3位</button>
+                                <button onclick="updateTemplate('Une table for [VAR] personas, s\'il vous plaît.', '4位', 'quatre', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">4位</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-2">
@@ -208,16 +209,19 @@
                             </button>
                             <button onclick="updatePhrase('有英文菜單嗎？', 'Le menu en anglais, s\'il vous plaît?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                                 <span>📖 英文菜單？</span>
-                                <span class="text-xs text-gray-400 italic">Le menu en anglais?</span>
+                                <span class="text-xs text-gray-400 italic">Menu en anglais?</span>
                             </button>
                             <button onclick="updatePhrase('您推薦什麼菜？', 'Quel plat recommandez-vous?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                                 <span>👨‍🍳 您推薦什麼菜？</span>
+                                <span class="text-[10px] text-gray-400 italic">Recommandez-vous?</span>
                             </button>
                             <button onclick="updatePhrase('我要一瓶自來水', 'Une carafe d\'eau, s\'il vous plaît.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                                 <span>💧 一瓶自來水 (免費)</span>
+                                <span class="text-[10px] text-gray-400 italic">Carafe d'eau</span>
                             </button>
                             <button onclick="updatePhrase('我不吃肉/海鮮', 'Je ne mange pas de viande / de fruits de mer.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                                 <span class="text-red-500 font-bold">🚫 不吃肉/海鮮</span>
+                                <span class="text-[10px] text-gray-400 italic">Pas de viande</span>
                             </button>
                             <button onclick="updatePhrase('買單 / 結帳，謝謝', 'L\'addition, s\'il vous plaît.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-blue-600">
                                 <span class="font-bold text-blue-600">💶 結帳，謝謝</span>
@@ -239,9 +243,11 @@
                         </button>
                         <button onclick="updatePhrase('太貴了！', 'C\'est trop cher.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
                             <span>😱 太貴了！</span>
+                            <span class="text-[10px] text-gray-400 italic">Trop cher</span>
                         </button>
                         <button onclick="updatePhrase('我可以試穿嗎？', 'Puis-je l\'essayer ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
                             <span>👗 我可以試穿嗎？</span>
+                            <span class="text-[10px] text-gray-400 italic">L'essayer?</span>
                         </button>
                         <button onclick="updatePhrase('我要辦理退稅', 'La détaxe, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center border-r-4 border-yellow-400">
                             <span>📄 我要退稅</span>
@@ -249,9 +255,11 @@
                         </button>
                         <button onclick="updatePhrase('我要買一張票', 'Un billet, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
                             <span>🎫 我要買一張票</span>
+                            <span class="text-[10px] text-gray-400 italic">Un billet</span>
                         </button>
                         <button onclick="updatePhrase('這班火車去巴黎嗎？', 'Est-ce que ce train va à Paris ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
                             <span>🚆 這班火車去巴黎嗎？</span>
+                            <span class="text-[10px] text-gray-400 italic">Va à Paris?</span>
                         </button>
                     </div>
                 </section>
@@ -261,7 +269,7 @@
                     <h2 class="text-xs font-bold text-red-600 mb-3 ml-1 font-bold italic">緊急求助</h2>
                     <button onclick="updatePhrase('請救救我 / 幫幫我', 'Aidez-moi, s\'il vous plaît.')" class="btn-active w-full bg-red-600 text-white p-5 rounded-3xl card-shadow font-bold text-xl flex justify-between items-center shadow-red-100 shadow-xl mb-3">
                         <span>🆘 請幫幫我</span>
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                        <span class="text-xs opacity-80 italic">Aidez-moi</span>
                     </button>
                     <div class="grid grid-cols-1 gap-2">
                         <button onclick="updatePhrase('我迷路了', 'Je suis perdu(e).')" class="btn-active bg-white border-2 border-red-50 p-4 rounded-2xl text-red-600 font-bold flex justify-between items-center">
@@ -274,6 +282,7 @@
                         </button>
                         <button onclick="updatePhrase('我不說法文', 'Je ne parle pas français.')" class="btn-active bg-white border border-gray-200 p-4 rounded-2xl text-gray-600 flex justify-between items-center">
                             <span>😶 我不說法文</span>
+                            <span class="text-[10px] text-gray-400 italic">Pas français</span>
                         </button>
                     </div>
                 </section>
