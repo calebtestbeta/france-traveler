@@ -10,17 +10,12 @@
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        @media (orientation: landscape) {
-            #portrait-view { display: none; }
-            #landscape-view { display: flex !important; }
-            body { background-color: #000; }
-        }
-
+        /* 橫向模式專用樣式 (僅針對手機橫放：高度小於 550px) */
         #landscape-view {
             display: none;
             position: fixed;
@@ -42,6 +37,7 @@
 
         .french-text { font-family: 'Poppins', sans-serif; }
 
+        /* 保持全螢幕感 */
         html, body {
             position: fixed;
             overflow: hidden;
@@ -65,26 +61,19 @@
             transform: scale(0.98);
             filter: brightness(0.9);
         }
-
-        /* 選取器樣式 */
-        .voice-item {
-            transition: all 0.2s;
-        }
-        .voice-item.selected {
-            border-color: #05559E;
-            background-color: #eff6ff;
-        }
     </style>
 </head>
 <body>
 
+    <!-- 直向模式介面 -->
     <div id="portrait-view" class="h-full flex flex-col">
-        <header class="bg-white border-b p-4 pt-8 sticky top-0 z-10 shadow-md">
+        <!-- 頂部狀態列 -->
+        <header class="bg-white border-b p-4 pt-8 sticky top-0 z-10 shadow-sm">
             <div class="max-w-md mx-auto">
                 <div class="flex justify-between items-end mb-1">
                     <h1 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">目前準備播放</h1>
                     <div class="flex gap-2">
-                        <span id="sync-status" class="text-[9px] text-gray-400 self-center">正在同步設定...</span>
+                        <span id="sync-status" class="text-[9px] text-gray-400 self-center">同步中...</span>
                         <button onclick="toggleSettings()" class="text-[10px] bg-gray-100 text-blue-600 px-2 py-0.5 rounded-full font-bold border border-blue-100">⚙️ 語音設定</button>
                     </div>
                 </div>
@@ -105,80 +94,100 @@
                     <h3 class="font-bold text-gray-800">手動選取法文語音</h3>
                     <button onclick="toggleSettings()" class="text-gray-400 text-xl">&times;</button>
                 </div>
-                <p class="text-xs text-gray-500 mb-4">選取您喜歡的語音後，系統會自動儲存您的偏好，下次開啟時將自動套用。</p>
-                <div id="voice-list" class="max-h-60 overflow-y-auto space-y-2 mb-4 pr-2">
-                    <div class="text-center py-4 text-sm text-gray-400">正在搜尋系統語音...</div>
+                <div id="voice-list" class="max-h-60 overflow-y-auto space-y-2 mb-4 pr-2 text-sm">
+                    <div class="text-center py-4 text-gray-400">載入語音中...</div>
                 </div>
-                <button onclick="toggleSettings()" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg">確認並關閉</button>
+                <button onclick="toggleSettings()" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold">確認並關閉</button>
             </div>
         </div>
 
+        <!-- 句子清單內容 -->
         <main id="scroll-container" class="flex-1 p-4 pb-20">
             <div class="max-w-md mx-auto space-y-6">
                 
-                <!-- 3.1 萬用禮貌金句 (PRD) -->
+                <!-- 3.1 日常禮貌 -->
                 <section>
                     <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1 flex items-center">
                         <span class="w-1 h-4 bg-blue-500 rounded-full mr-2"></span>日常禮貌
                     </h2>
                     <div class="grid grid-cols-2 gap-3">
                         <button onclick="updatePhrase('你好 / 日安 (白天)', 'Bonjour')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-blue-500 flex flex-col">
-                            <span class="text-[10px] text-gray-400">Bonjour</span>
+                            <span class="text-[10px] text-gray-400 french-text">Bonjour</span>
                             <span class="font-bold">你好 (日安)</span>
                         </button>
-                        <button onclick="updatePhrase('晚安 (傍晚後)', 'Bonsoir')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-blue-900 flex flex-col">
-                            <span class="text-[10px] text-gray-400">Bonsoir</span>
-                            <span class="font-bold">你好 (晚上)</span>
+                        <button onclick="updatePhrase('晚上好', 'Bonsoir')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-blue-900 flex flex-col">
+                            <span class="text-[10px] text-gray-400 french-text">Bonsoir</span>
+                            <span class="font-bold">晚上好</span>
                         </button>
                         <button onclick="updatePhrase('非常感謝', 'Merci beaucoup')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-red-500 flex flex-col">
-                            <span class="text-[10px] text-gray-400">Merci beaucoup</span>
+                            <span class="text-[10px] text-gray-400 french-text">Merci beaucoup</span>
                             <span class="font-bold">謝謝</span>
                         </button>
                         <button onclick="updatePhrase('麻煩您 / 請問...', 'S\'il vous plaît')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-gray-300 flex flex-col">
-                            <span class="text-[10px] text-gray-400">S'il vous plaît</span>
-                            <span class="font-bold">請 (有禮貌)</span>
+                            <span class="text-[10px] text-gray-400 french-text">S'il vous plaît</span>
+                            <span class="font-bold">麻煩您</span>
                         </button>
                         <button onclick="updatePhrase('不好意思 / 借過', 'Excusez-moi')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-yellow-500 flex flex-col">
-                            <span class="text-[10px] text-gray-400">Excusez-moi</span>
+                            <span class="text-[10px] text-gray-400 french-text">Excusez-moi</span>
                             <span class="font-bold">不好意思</span>
                         </button>
                         <button onclick="updatePhrase('對不起 / 抱歉', 'Pardon')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left border-l-4 border-orange-500 flex flex-col">
-                            <span class="text-[10px] text-gray-400">Pardon</span>
+                            <span class="text-[10px] text-gray-400 french-text">Pardon</span>
                             <span class="font-bold">對不起</span>
                         </button>
                     </div>
                 </section>
 
-                <!-- 飯店住宿 (生活化補強) -->
-                <section class="bg-green-50 p-4 rounded-3xl">
-                    <h2 class="text-xs font-bold text-green-800 mb-3 ml-1 font-bold">飯店與住宿需求</h2>
-                    <div class="space-y-2">
-                        <button onclick="updatePhrase('我有預訂房間', 'J\'ai une réservation.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-green-500">
-                            <div><div class="text-xs text-gray-400">J'ai une réservation.</div><div class="font-bold text-gray-800">我有預訂房間</div></div>
-                        </button>
-                        <button onclick="updatePhrase('Wi-Fi 密碼是多少？', 'Quel est le mot de passe du Wi-Fi ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
-                            <span>Wi-Fi 密碼是多少？</span>
-                            <span class="text-xs text-blue-500 font-bold">Wi-Fi?</span>
-                        </button>
-                        <button onclick="updatePhrase('可以寄放行李嗎？', 'Puis-je laisser mes bagages ici ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
-                            <span>可以寄放行李嗎？</span>
-                            <span class="text-[10px] text-gray-400 italic">Mes bagages?</span>
-                        </button>
-                        <button onclick="updatePhrase('沒有熱水', 'Il n\'y a pas d\'eau chaude.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center text-red-600">
-                            <span class="font-bold">房間沒有熱水</span>
-                            <span class="text-xs opacity-60 italic">Pas d'eau chaude</span>
-                        </button>
+                <!-- 飯店住宿 -->
+                <section class="bg-green-50/50 p-4 rounded-3xl">
+                    <h2 class="text-xs font-bold text-green-800 mb-3 ml-1">飯店與住宿需求</h2>
+                    <div class="space-y-3">
+                        <div class="bg-white p-4 rounded-2xl card-shadow">
+                            <p class="text-[10px] text-gray-400 mb-3 italic">預訂 [人數] 人的房間</p>
+                            <div class="grid grid-cols-6 gap-1">
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'une', this, true)" class="var-btn btn-active py-2 bg-gray-50 rounded-lg font-bold text-xs">1</button>
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'deux', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">2</button>
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'trois', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">3</button>
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'quatre', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">4</button>
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'cinq', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">5</button>
+                                <button onclick="updateTemplate('Une chambre pour [VAR] [PLU], s\'il vous plaît.', '房間', 'six', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">6</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button onclick="updatePhrase('我有預訂房間', 'J\'ai une réservation.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-green-500">
+                                <div><div class="text-[10px] text-gray-400 french-text italic uppercase">J'ai une réservation.</div><div class="font-bold">我有預訂房間</div></div>
+                            </button>
+                            <button onclick="updatePhrase('Wi-Fi 密碼是多少？', 'Quel est le mot de passe du Wi-Fi ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
+                                <span>Wi-Fi 密碼是多少？</span>
+                                <span class="text-[10px] text-blue-500 font-french italic">Wi-Fi?</span>
+                            </button>
+                            <button onclick="updatePhrase('可以寄放行李嗎？', 'Puis-je laisser mes bagages ici ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
+                                <span>可以寄放行李嗎？</span>
+                                <span class="text-[10px] text-gray-400 french-text italic">Mes bagages?</span>
+                            </button>
+                            <button onclick="updatePhrase('沒有熱水', 'Il n\'y a pas d\'eau chaude.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center text-red-600">
+                                <span class="font-bold">房間沒有熱水</span>
+                                <span class="text-xs opacity-60 italic">Pas d'eau chaude</span>
+                            </button>
+                            <button onclick="updatePhrase('早餐是幾點？', 'À quelle heure est le petit-déjeuner ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left">
+                                <span>早餐是幾點？</span>
+                            </button>
+                            <button onclick="updatePhrase('我要結帳退房', 'Je voudrais régler la note.')" class="btn-active bg-gray-800 text-white p-4 rounded-2xl flex justify-between items-center">
+                                <span>辦理退房 (Check-out)</span>
+                                <span class="text-[10px] opacity-60">Régler la note</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
-                <!-- 3.2 詢問地點模板 (PRD) -->
-                <section class="bg-blue-100 p-4 rounded-3xl">
-                    <h2 class="text-xs font-bold text-blue-800 mb-3 ml-1 font-bold">詢問地點 (點擊項目即組合)</h2>
+                <!-- 3.2 詢問地點模板 -->
+                <section class="bg-blue-100/50 p-4 rounded-3xl">
+                    <h2 class="text-xs font-bold text-blue-800 mb-3 ml-1 font-bold">詢問地點 (點擊項目組合)</h2>
                     <div class="bg-white p-4 rounded-2xl card-shadow">
                         <p class="text-[10px] text-gray-400 mb-3 italic">"Où est [項目], s'il vous plaît?"</p>
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '洗手間', 'les toilettes', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">🚽 廁所</button>
-                            <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '捷運站', 'la station de métro', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">🚇 地鐵站</button>
+                            <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '地鐵站', 'la station de métro', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">🚇 地鐵站</button>
                             <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '藥局', 'la pharmacie', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">💊 藥局</button>
                             <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '出口', 'la sortie', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">🚪 出口</button>
                             <button onclick="updateTemplate('Où est [VAR], s\'il vous plaît?', '入口', 'l\'entrée', this)" class="var-btn btn-active px-3 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700">📍 入口</button>
@@ -187,29 +196,31 @@
                     </div>
                 </section>
 
-                <!-- 3.3 餐廳與飲食 (PRD) -->
+                <!-- 3.3 餐廳與飲食 -->
                 <section>
                     <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1 flex items-center">
                         <span class="w-1 h-4 bg-orange-500 rounded-full mr-2"></span>餐廳用餐
                     </h2>
                     <div class="space-y-3">
                         <div class="bg-white p-4 rounded-2xl card-shadow">
-                            <p class="text-xs text-gray-400 mb-3">人數預約模板：</p>
-                            <div class="grid grid-cols-4 gap-2">
-                                <button onclick="updateTemplate('Une table pour [VAR] personnes, s\'il vous plaît.', '1位', 'une', this)" class="var-btn btn-active py-2 bg-gray-50 rounded-xl font-bold text-sm">1人</button>
-                                <button onclick="updateTemplate('Une table for [VAR] personnes, s\'il vous plaît.', '2位', 'deux', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">2人</button>
-                                <button onclick="updateTemplate('Une table for [VAR] personas, s\'il vous plaît.', '3位', 'trois', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">3位</button>
-                                <button onclick="updateTemplate('Une table for [VAR] personas, s\'il vous plaît.', '4位', 'quatre', this)" class="var-btn py-2 bg-gray-50 rounded-xl font-bold text-sm">4位</button>
+                            <p class="text-xs text-gray-400 mb-3">預約人數 (1-6人)：</p>
+                            <div class="grid grid-cols-6 gap-1">
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'une', this, true)" class="var-btn btn-active py-2 bg-gray-50 rounded-lg font-bold text-xs">1</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'deux', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">2</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'trois', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">3</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'quatre', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">4</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'cinq', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">5</button>
+                                <button onclick="updateTemplate('Une table pour [VAR] [PLU], s\'il vous plaît.', '餐廳', 'six', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">6</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-2">
                             <button onclick="updatePhrase('我想要點這個', 'Je voudrais ceci.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
-                                <span>👉 我想要點這個</span>
-                                <span class="text-xs text-gray-400 italic">Je voudrais ceci</span>
+                                <span>👉 我想要點這個 (指選)</span>
+                                <span class="text-[10px] text-gray-400 french-text italic">Je voudrais ceci</span>
                             </button>
                             <button onclick="updatePhrase('有英文菜單嗎？', 'Le menu en anglais, s\'il vous plaît?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
-                                <span>📖 英文菜單？</span>
-                                <span class="text-xs text-gray-400 italic">Menu en anglais?</span>
+                                <span>📖 有英文菜單嗎？</span>
+                                <span class="text-[10px] text-gray-400 french-text italic">Menu en anglais?</span>
                             </button>
                             <button onclick="updatePhrase('您推薦什麼菜？', 'Quel plat recommandez-vous?')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
                                 <span>👨‍🍳 您推薦什麼菜？</span>
@@ -220,91 +231,100 @@
                                 <span class="text-[10px] text-gray-400 italic">Carafe d'eau</span>
                             </button>
                             <button onclick="updatePhrase('我不吃肉/海鮮', 'Je ne mange pas de viande / de fruits de mer.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center">
-                                <span class="text-red-500 font-bold">🚫 不吃肉/海鮮</span>
+                                <span class="text-red-500 font-bold">🚫 不吃肉 / 海鮮</span>
                                 <span class="text-[10px] text-gray-400 italic">Pas de viande</span>
                             </button>
-                            <button onclick="updatePhrase('買單 / 結帳，謝謝', 'L\'addition, s\'il vous plaît.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-blue-600">
-                                <span class="font-bold text-blue-600">💶 結帳，謝謝</span>
-                                <span class="text-xs text-gray-400 font-bold">L'addition</span>
+                            <button onclick="updatePhrase('買單，謝謝', 'L\'addition, s\'il vous plaît.')" class="btn-active bg-white p-4 rounded-2xl card-shadow text-left flex justify-between items-center border-l-4 border-blue-600">
+                                <span class="font-bold text-blue-600 uppercase">💶 結帳 / 買單</span>
+                                <span class="text-[10px] text-blue-400 font-bold french-text">L'addition</span>
                             </button>
                         </div>
                     </div>
                 </section>
 
-                <!-- 3.4 購物與交通 (PRD) -->
+                <!-- 3.4 購物與票券 -->
                 <section>
                     <h2 class="text-xs font-bold text-gray-400 mb-3 ml-1 flex items-center">
                         <span class="w-1 h-4 bg-purple-500 rounded-full mr-2"></span>購物與交通
                     </h2>
-                    <div class="space-y-2">
-                        <button onclick="updatePhrase('這多少錢？', 'C\'est combien ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
-                            <span class="font-bold">💰 這多少錢？</span>
-                            <span class="text-blue-500 font-medium">C'est combien?</span>
-                        </button>
-                        <button onclick="updatePhrase('太貴了！', 'C\'est trop cher.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
-                            <span>😱 太貴了！</span>
-                            <span class="text-[10px] text-gray-400 italic">Trop cher</span>
-                        </button>
-                        <button onclick="updatePhrase('我可以試穿嗎？', 'Puis-je l\'essayer ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
-                            <span>👗 我可以試穿嗎？</span>
-                            <span class="text-[10px] text-gray-400 italic">L'essayer?</span>
-                        </button>
-                        <button onclick="updatePhrase('我要辦理退稅', 'La détaxe, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center border-r-4 border-yellow-400">
-                            <span>📄 我要退稅</span>
-                            <span class="text-xs text-gray-400">La détaxe</span>
-                        </button>
-                        <button onclick="updatePhrase('我要買一張票', 'Un billet, s\'il vous plaît.')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
-                            <span>🎫 我要買一張票</span>
-                            <span class="text-[10px] text-gray-400 italic">Un billet</span>
-                        </button>
-                        <button onclick="updatePhrase('這班火車去巴黎嗎？', 'Est-ce que ce train va à Paris ?')" class="btn-active w-full bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
-                            <span>🚆 這班火車去巴黎嗎？</span>
-                            <span class="text-[10px] text-gray-400 italic">Va à Paris?</span>
-                        </button>
+                    <div class="space-y-3">
+                        <div class="bg-white p-4 rounded-2xl card-shadow">
+                            <p class="text-xs text-gray-400 mb-3">購買 [人數] 張票：</p>
+                            <div class="grid grid-cols-6 gap-1">
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'une', this, true)" class="var-btn btn-active py-2 bg-gray-50 rounded-lg font-bold text-xs">1</button>
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'deux', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">2</button>
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'trois', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">3</button>
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'quatre', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">4</button>
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'cinq', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">5</button>
+                                <button onclick="updateTemplate('Des billets pour [VAR] [PLU], s\'il vous plaît.', '票券', 'six', this, true)" class="var-btn py-2 bg-gray-50 rounded-lg font-bold text-xs">6</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button onclick="updatePhrase('這多少錢？', 'C\'est combien ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow flex justify-between items-center border-l-4 border-blue-600">
+                                <span class="font-bold">💰 這多少錢？</span>
+                                <span class="text-[10px] text-blue-500 font-french font-bold">C'est combien?</span>
+                            </button>
+                            <button onclick="updatePhrase('太貴了！', 'C\'est trop cher.')" class="btn-active bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
+                                <span>😱 太貴了！</span>
+                                <span class="text-[10px] text-gray-400 italic">Trop cher</span>
+                            </button>
+                            <button onclick="updatePhrase('我可以試穿嗎？', 'Puis-je l\'essayer ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow flex justify-between items-center">
+                                <span>👗 我可以試穿嗎？</span>
+                                <span class="text-[10px] text-gray-400 italic">L'essayer?</span>
+                            </button>
+                            <button onclick="updatePhrase('我要辦理退稅', 'La détaxe, s\'il vous plaît.')" class="btn-active bg-white p-4 rounded-2xl card-shadow flex justify-between items-center border-r-4 border-yellow-400">
+                                <span>📄 我要退稅</span>
+                                <span class="text-[10px] text-yellow-600 font-bold">La détaxe</span>
+                            </button>
+                            <button onclick="updatePhrase('這班火車去巴黎嗎？', 'Est-ce que ce train va à Paris ?')" class="btn-active bg-white p-4 rounded-2xl card-shadow">
+                                <span>🚆 這班火車去巴黎嗎？</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
-                <!-- 3.5 緊急與幫助 (PRD) -->
+                <!-- 3.5 緊急與幫助 -->
                 <section class="pb-12">
                     <h2 class="text-xs font-bold text-red-600 mb-3 ml-1 font-bold italic">緊急求助</h2>
-                    <button onclick="updatePhrase('請救救我 / 幫幫我', 'Aidez-moi, s\'il vous plaît.')" class="btn-active w-full bg-red-600 text-white p-5 rounded-3xl card-shadow font-bold text-xl flex justify-between items-center shadow-red-100 shadow-xl mb-3">
-                        <span>🆘 請幫幫我</span>
-                        <span class="text-xs opacity-80 italic">Aidez-moi</span>
-                    </button>
-                    <div class="grid grid-cols-1 gap-2">
-                        <button onclick="updatePhrase('我迷路了', 'Je suis perdu(e).')" class="btn-active bg-white border-2 border-red-50 p-4 rounded-2xl text-red-600 font-bold flex justify-between items-center">
-                            <span>📍 我迷路了</span>
-                            <span class="text-[10px] opacity-60 italic">Je suis perdu(e)</span>
+                    <div class="space-y-3">
+                        <button onclick="updatePhrase('請幫幫我 / 救救我', 'Aidez-moi, s\'il vous plaît.')" class="btn-active bg-red-600 text-white p-5 rounded-3xl card-shadow font-bold text-xl flex justify-between items-center shadow-red-200 shadow-xl w-full">
+                            <span>🆘 請幫幫我 / 救命</span>
+                            <span class="text-[10px] opacity-80 uppercase">Aidez-moi</span>
                         </button>
-                        <button onclick="updatePhrase('您會講英文嗎？', 'Parlez-vous anglais ?')" class="btn-active bg-gray-800 text-white p-4 rounded-2xl font-bold flex justify-between items-center">
-                            <span>🗣️ 您會講英文嗎？</span>
-                            <span class="text-xs text-gray-400">Anglais?</span>
-                        </button>
-                        <button onclick="updatePhrase('我不說法文', 'Je ne parle pas français.')" class="btn-active bg-white border border-gray-200 p-4 rounded-2xl text-gray-600 flex justify-between items-center">
-                            <span>😶 我不說法文</span>
-                            <span class="text-[10px] text-gray-400 italic">Pas français</span>
-                        </button>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button onclick="updatePhrase('我迷路了', 'Je suis perdu(e).')" class="btn-active bg-white p-4 rounded-2xl card-shadow border-red-600 border-l-4 flex justify-between items-center">
+                                <span class="font-bold text-red-600">📍 我迷路了</span>
+                                <span class="text-[10px] opacity-60 italic">Je suis perdu(e)</span>
+                            </button>
+                            <button onclick="updatePhrase('您會講英文嗎？', 'Parlez-vous anglais ?')" class="btn-active bg-gray-800 text-white p-4 rounded-2xl font-bold flex justify-between items-center">
+                                <span>🗣️ 您會講英文嗎？</span>
+                                <span class="text-[10px] opacity-60">Anglais?</span>
+                            </button>
+                            <button onclick="updatePhrase('我不說法文', 'Je ne parle pas français.')" class="btn-active bg-white p-4 rounded-2xl card-shadow border-slate-300 border-l-4">
+                                <span>😶 我不說法文</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
                 
-                <section class="pb-12 text-center">
-                    <p class="text-[10px] text-gray-300">法國旅遊隨身說 v1.5 | 依據 PRD 完整版</p>
-                </section>
+                <footer class="pb-12 text-center">
+                    <p class="text-[10px] text-gray-300">法國旅遊隨身說 v2.0 | 經典 UI 完整版</p>
+                </footer>
             </div>
         </main>
     </div>
 
-    <!-- 橫向展示模式 -->
+    <!-- 展示模式大字區域 -->
     <div id="landscape-view" onclick="speakCurrent()">
-        <div id="land-zh" class="text-2xl opacity-80 mb-4">點擊螢幕播放語音</div>
-        <div id="land-fr" class="text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white">Bonjour</div>
+        <div id="landscape-zh" class="text-2xl opacity-80 mb-4">點擊螢幕播放語音</div>
+        <div id="landscape-fr" class="text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white">Bonjour</div>
         <div class="mt-16 flex items-center gap-2 text-blue-300 animate-bounce">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
             <span class="text-sm font-bold tracking-widest uppercase">Tap to speak</span>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -317,7 +337,6 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         let currentUser = null;
-        let preferredVoiceName = null;
 
         const initAuth = async () => {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -330,7 +349,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('sync-status').innerText = "設定已同步";
+                document.getElementById('sync-status').innerText = "已連線";
                 await loadUserSettings();
             } else {
                 initAuth();
@@ -340,10 +359,10 @@
         async function loadUserSettings() {
             if (!currentUser) return;
             try {
-                const settingsDoc = await getDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'voice'));
-                if (settingsDoc.exists()) {
-                    preferredVoiceName = settingsDoc.data().preferredVoiceName;
-                    applyPreferredVoice();
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'voice');
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    window.applyPreferredVoice(snap.data().preferredVoiceName);
                 }
             } catch (error) {}
         }
@@ -351,23 +370,11 @@
         window.savePreferredVoice = async (voiceName) => {
             if (!currentUser) return;
             try {
-                document.getElementById('sync-status').innerText = "正在儲存...";
-                await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'voice'), {
-                    preferredVoiceName: voiceName
-                });
-                preferredVoiceName = voiceName;
-                document.getElementById('sync-status').innerText = "設定已同步";
+                document.getElementById('sync-status').innerText = "儲存中...";
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'voice');
+                await setDoc(docRef, { preferredVoiceName: voiceName });
+                document.getElementById('sync-status').innerText = "已同步";
             } catch (error) {}
-        };
-
-        window.applyPreferredVoice = () => {
-            if (!preferredVoiceName) return;
-            const voices = window.speechSynthesis.getVoices();
-            const foundVoice = voices.find(v => v.name === preferredVoiceName);
-            if (foundVoice) {
-                window.userSelectedVoice = foundVoice;
-                window.refreshVoiceList();
-            }
         };
     </script>
 
@@ -380,23 +387,30 @@
         function refreshVoiceList() {
             const voices = window.speechSynthesis.getVoices();
             frenchVoices = voices.filter(v => v.lang.startsWith('fr'));
-            
             const listEl = document.getElementById('voice-list');
             if (frenchVoices.length === 0) {
-                listEl.innerHTML = '<div class="text-center py-4 text-sm text-red-400">找不到法文語音。</div>';
+                listEl.innerHTML = '<div class="text-center py-4 text-red-400">找不到法文語音。</div>';
                 return;
             }
-
             listEl.innerHTML = '';
             frenchVoices.forEach((voice, index) => {
                 const isSelected = window.userSelectedVoice && window.userSelectedVoice.name === voice.name;
                 const div = document.createElement('div');
-                div.className = `voice-item p-3 border-2 rounded-xl cursor-pointer flex justify-between items-center ${isSelected ? 'selected border-blue-500 bg-blue-50' : 'border-gray-100'}`;
+                div.className = `p-3 border-2 rounded-xl cursor-pointer flex justify-between items-center mb-2 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-slate-100'}`;
                 const cleanName = voice.name.split(' (')[0].replace('French (France)', '法文');
-                div.innerHTML = `<div class="flex-1" onclick="selectVoice(${index})"><div class="text-sm font-bold text-gray-800">${cleanName} ${isSelected ? '✅' : ''}</div></div><button onclick="testVoice(${index})" class="ml-2 p-2 bg-blue-100 text-blue-600 rounded-lg text-xs font-bold">測試</button>`;
+                div.innerHTML = `<div class="flex-1" onclick="selectVoice(${index})"><div class="font-bold text-gray-800">${cleanName} ${isSelected ? '✅' : ''}</div></div><button onclick="testVoice(${index})" class="ml-2 p-2 bg-blue-100 text-blue-600 rounded-lg text-xs font-bold">測試</button>`;
                 listEl.appendChild(div);
             });
         }
+
+        window.applyPreferredVoice = (voiceName) => {
+            const voices = window.speechSynthesis.getVoices();
+            const voice = voices.find(v => v.name === voiceName);
+            if (voice) {
+                window.userSelectedVoice = voice;
+                refreshVoiceList();
+            }
+        };
 
         function toggleSettings() {
             document.getElementById('settings-panel').classList.toggle('hidden');
@@ -412,27 +426,26 @@
 
         function testVoice(index) {
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance("Bonjour, comment allez-vous ?");
-            utterance.voice = frenchVoices[index];
-            utterance.lang = frenchVoices[index].lang;
-            utterance.rate = 0.8;
-            window.speechSynthesis.speak(utterance);
+            const ut = new SpeechSynthesisUtterance("Bonjour, comment allez-vous ?");
+            ut.voice = frenchVoices[index];
+            ut.lang = frenchVoices[index].lang;
+            ut.rate = 0.8;
+            window.speechSynthesis.speak(ut);
         }
 
         function speak(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'fr-FR';
-            utterance.rate = 0.8;
+            const ut = new SpeechSynthesisUtterance(text);
+            ut.lang = 'fr-FR';
+            ut.rate = 0.8;
             if (window.userSelectedVoice) {
-                utterance.voice = window.userSelectedVoice;
+                ut.voice = window.userSelectedVoice;
             } else {
-                const voices = window.speechSynthesis.getVoices();
-                const autoVoice = voices.find(v => v.lang === 'fr-FR' && v.name.includes('Premium')) || voices.find(v => v.lang.startsWith('fr'));
-                if (autoVoice) utterance.voice = autoVoice;
+                const v = window.speechSynthesis.getVoices().find(v => v.lang === 'fr-FR' && v.name.includes('Premium')) || window.speechSynthesis.getVoices().find(v => v.lang.startsWith('fr'));
+                if (v) ut.voice = v;
             }
-            window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(ut);
         }
 
         function updatePhrase(zh, fr) {
@@ -440,32 +453,50 @@
             currentFrench = fr;
             document.getElementById('display-zh').innerText = zh;
             document.getElementById('display-fr').innerText = fr;
-            document.getElementById('land-zh').innerText = zh;
-            document.getElementById('land-fr').innerText = fr;
-            const landFr = document.getElementById('land-fr');
-            landFr.className = fr.length > 20 ? "text-3xl md:text-5xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white" : "text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white";
+            document.getElementById('landscape-zh').innerText = zh;
+            document.getElementById('landscape-fr').innerText = fr;
+            
+            const lFr = document.getElementById('landscape-fr');
+            lFr.className = fr.length > 20 ? "text-3xl md:text-5xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white" : "text-5xl md:text-8xl font-bold french-text leading-tight drop-shadow-lg px-6 text-white";
+            
             speak(fr);
-            document.querySelectorAll('.var-btn').forEach(b => b.classList.remove('active-btn'));
+            
+            // 如果不是變量按鈕點擊，則清除變量的高亮
+            if (!event || !event.currentTarget.classList.contains('var-btn')) {
+                document.querySelectorAll('.var-btn').forEach(b => b.classList.remove('active-btn'));
+            }
         }
 
-        function updateTemplate(templateFr, varZh, varFr, btn) {
-            const finalFr = templateFr.replace('[VAR]', varFr);
-            const finalZh = varZh.includes('位') ? `我要預約 ${varZh}` : `請問「${varZh}」在哪裡？`;
-            updatePhrase(finalZh, finalFr);
+        function updateTemplate(tpl, ctx, varFr, btn, isNum = false) {
+            btn.parentElement.querySelectorAll('.var-btn').forEach(b => b.classList.remove('active-btn'));
             btn.classList.add('active-btn');
+
+            let fr = tpl.replace('[VAR]', varFr);
+            let zh = "";
+
+            if (isNum) {
+                const map = { "une": 1, "deux": 2, "trois": 3, "quatre": 4, "cinq": 5, "six": 6 };
+                const n = map[varFr];
+                fr = fr.replace('[PLU]', n === 1 ? "personne" : "personnes");
+                zh = `我要預訂 ${n} 人的${ctx}`;
+            } else {
+                zh = `請問「${ctx}」在哪裡？`;
+            }
+
+            updatePhrase(zh, fr);
         }
 
         function speakCurrent() { speak(currentFrench); }
 
-        window.addEventListener('resize', () => {
-            document.getElementById('landscape-view').style.display = window.innerWidth > window.innerHeight ? 'flex' : 'none';
-        });
-
-        window.speechSynthesis.onvoiceschanged = () => {
-            refreshVoiceList();
-            if (window.applyPreferredVoice) window.applyPreferredVoice();
+        const handleResize = () => {
+            const isLandscape = window.innerWidth > window.innerHeight;
+            const isMobileLandscape = isLandscape && window.innerHeight < 550;
+            document.getElementById('landscape-view').style.display = isMobileLandscape ? 'flex' : 'none';
         };
-        
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', handleResize);
+        window.speechSynthesis.onvoiceschanged = refreshVoiceList;
         window.onload = () => {
             const unlock = new SpeechSynthesisUtterance('');
             window.speechSynthesis.speak(unlock);
